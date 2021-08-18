@@ -8,6 +8,7 @@ use Illuminate\Contracts\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Support\Str;
 
 class Cache
 {
@@ -173,8 +174,9 @@ class Cache
         $deletedHtml = $this->files->delete($this->getCachePath($slug.'.html'));
         $deletedJson = $this->files->delete($this->getCachePath($slug.'.json'));
         $deletedXml = $this->files->delete($this->getCachePath($slug.'.xml'));
+        $deletedCsv = $this->files->delete($this->getCachePath($slug.'.csv'));
 
-        return $deletedHtml || $deletedJson || $deletedXml;
+        return $deletedHtml || $deletedJson || $deletedXml || $deletedCsv;
     }
 
     /**
@@ -249,6 +251,10 @@ class Cache
 
         if (in_array($contentType, ['text/xml', 'application/xml'])) {
             return 'xml';
+        }
+
+        if (Str::startsWith($contentType, 'text/csv')) {
+            return 'csv';
         }
 
         return 'html';
